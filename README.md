@@ -1,17 +1,17 @@
 = mcVideoEncoder plugin
 
-Author: ‚ä‚ñ‚ä‚ñ’T’ã
+Author: ã‚†ã‚“ã‚†ã‚“æŽ¢åµ
 
-== ‚±‚ê‚Í‚È‚ÉH
+== ã“ã‚Œã¯ãªã«ï¼Ÿ
 
-‹g—¢‹g—¢/‹g—¢‹g—¢Z—p‚ÌAWindows‚Ì Media Foundation ƒNƒ‰ƒX‚ð—˜—p‚µ‚Ä
-wmv/mp4/mpegŒ^Ž®‚Ì“®‰æƒtƒ@ƒCƒ‹‚ð•Û‘¶‚·‚é‚½‚ß‚Ìƒvƒ‰ƒOƒCƒ“‚Å‚·B
+å‰é‡Œå‰é‡Œ/å‰é‡Œå‰é‡ŒZç”¨ã®ã€Windowsã® Media Foundation ã‚¯ãƒ©ã‚¹ã‚’åˆ©ç”¨ã—ã¦
+wmv/mp4/mpegåž‹å¼ã®å‹•ç”»ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä¿å­˜ã™ã‚‹ãŸã‚ã®ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã§ã™ã€‚
 
-== Žg‚¢•û
+== ä½¿ã„æ–¹
 
-manual.tjs ŽQÆ
+manual.tjs å‚ç…§
 
-== ƒ‰ƒCƒZƒ“ƒX
+== ãƒ©ã‚¤ã‚»ãƒ³ã‚¹
 
-‚±‚Ìƒvƒ‰ƒOƒCƒ“‚Ìƒ‰ƒCƒZƒ“ƒX‚Í‹g—¢‹g—¢Z‚É€‹’‚µ‚Ü‚·B
+ã“ã®ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã®ãƒ©ã‚¤ã‚»ãƒ³ã‚¹ã¯å‰é‡Œå‰é‡ŒZã«æº–æ‹ ã—ã¾ã™ã€‚
 
