@@ -31,7 +31,7 @@ class mfVideoEncoder {
 	// 出力拡張子には以下のバリエーションが指定できる。
 	// .wmv         wmv型式の動画を書き出します。
 	// .mp4         mp4コンテナでH264型式の動画を書き出します。
-	// .mpg, .mpeg  mpeg2型式の動画を書き出します。
+	// .mpg, .mpeg  mpeg2型式の動画を書き出します。(Windowsデフォルトではコーデック非搭載)
 
 	function open( filename );
 	function close();
