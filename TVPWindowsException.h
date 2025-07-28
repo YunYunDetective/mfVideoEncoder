@@ -6,7 +6,7 @@
 #include "tp_stub.h"
 
 
-inline void TVPThrowExceptionMessage(HRESULT hr) {
+inline void TVPThrowExceptionMessage(HRESULT hr, ttstr prefix = L"") {
 	static wchar_t buffer[1024] = {0};
 
     DWORD flags = FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS;
@@ -22,8 +22,12 @@ inline void TVPThrowExceptionMessage(HRESULT hr) {
         sizeof(buffer) / sizeof(wchar_t) - 1,
         nullptr
     );
+	if (len == 0)
+		swprintf_s(buffer, 1024, L"0x%08x", hr);
 
-	TVPThrowExceptionMessage(buffer);
+	ttstr msg = prefix + buffer;
+	TVPThrowExceptionMessage(msg.c_str());
 }
+
 
 #endif

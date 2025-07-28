@@ -36,7 +36,7 @@ public:
 	mfVideoEncoder( iTJSDispatch2 *objthis )
 		: objthis_(objthis)
 		, video_encoder_(nullptr)
-		, video_quality_(50), video_frame_rate_(30), video_width_(640), video_height_(480), video_frames_(0) {
+		, video_quality_(75), video_frame_rate_(30), video_width_(640), video_height_(480), video_frames_(0) {
 	}
 
 	virtual ~mfVideoEncoder() {

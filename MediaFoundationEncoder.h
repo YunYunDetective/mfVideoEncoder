@@ -27,6 +27,9 @@ public:
 	void SetVideoQuality( DWORD q );
 	DWORD GetVideoQuality() const;
 
+	void SetVideoVBR( bool v );
+	bool GetVideoVBR() const;
+
 	void SetVideoFrameRate( tjs_real f );
 	tjs_real GetVideoFrameRate() const ;
 
@@ -44,7 +47,7 @@ private:
 
 	bool encoder_running_;
 
-	DWORD video_quality_;		// クオリティ、0 - 100 ( default 50 )
+	DWORD video_quality_;		// クオリティ、0 - 100 ( default 75 )
 	tjs_real video_frame_rate_;           // フレームレート(default 30)
 	int video_width_;		// 画像幅 ( default 640 )
 	int video_height_;		// 画像高さ ( default 480 )

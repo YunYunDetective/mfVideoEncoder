@@ -5,7 +5,7 @@
 class mfVideoEncoder {
 	/**
 	 * 動画圧縮クオリティ
-	 * @description 0-100 デフォルト 50
+	 * @description 0-100 デフォルト 75
 	 */
 	property videoQuality;
 
@@ -40,8 +40,8 @@ class mfVideoEncoder {
 
 /*
 // 使用例
-Plugins.link("mcVideoEncoder.dll");
-encoder = new mcVideoEncoder;
+Plugins.link("mfVideoEncoder.dll");
+encoder = new mfVideoEncoder();
 encoder.open("c:\test.wmv");
 for( var i = 0; i < 120; i++ ) {
 	kag.fore.layers[0].XXXX; // レイヤに何かする
