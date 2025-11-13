@@ -167,7 +167,7 @@ MediaFoundationEncoder::Initial( const std::wstring &outFile )
 	// 参考値: 1080p30・H.264・quality=50 で 0.07 bits / pixel を基準
 	constexpr float kRefBpp      = 0.07f;          // 1080p30 H.264 Quality=50
 	constexpr float kRefPixels   = 1920.0f * 1080; // 基準解像度
-	const float qualityFactor    = std::pow(2.0f, (video_quality_ - 50) / 25.0f);
+	const float qualityFactor    = std::pow(2.0f, (static_cast<int>(video_quality_) - 50) / 25.0f);
 	const float resolutionFactor = std::pow(kRefPixels / (video_width_ * video_height_), 0.25f);
 	float codecFactor            = 1.0f;           // H.264
 	// if (codec == kHEVC) codecFactor = 0.55f;       // 目安: H.265 ≈45–60 %
