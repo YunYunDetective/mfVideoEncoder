@@ -4,6 +4,11 @@
 #include <mfidl.h>
 #include <mfreadwrite.h>
 #include <mferror.h>
+#include <wrl/client.h>
+#include <d3d11.h>
+#include <dxgi.h>
+#pragma comment(lib,"d3d11.lib")
+#pragma comment(lib,"dxgi.lib")
 
 #include <cmath>
 #include <algorithm>
@@ -78,8 +83,68 @@ MediaFoundationEncoder::Initial( const std::wstring &outFile )
 {
 	HRESULT hr;
 
+	//----------------------------------------------------------------------
+	// 入力のハードウェア変換のため、GPUを接続する
+	Microsoft::WRL::ComPtr<ID3D11Device>        d3d11Dev;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> d3d11Ctx;
+
+	// ── ① 作成フラグ ───────────────────────
+	//   * BGRA_SUPPORT : DXGI_FORMAT_B8G8R8A8 用
+	//   * VIDEO_SUPPORT: VideoProcessor / UVD / NVDEC など映像系 HW を有効
+	UINT creationFlags =
+		D3D11_CREATE_DEVICE_BGRA_SUPPORT |
+		D3D11_CREATE_DEVICE_VIDEO_SUPPORT;          // :contentReference[oaicite:0]{index=0}
+#ifdef _DEBUG
+	creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
+	// ── ② 使いたい FeatureLevel を並べる ──
+	D3D_FEATURE_LEVEL levels[] = {
+		D3D_FEATURE_LEVEL_12_1, D3D_FEATURE_LEVEL_12_0,
+		D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0
+	};
+
+	// ── ③ 最初にハードウェア GPU を列挙して渡す ──
+	Microsoft::WRL::ComPtr<IDXGIFactory1> dxgiFactory;
+	CreateDXGIFactory1(IID_PPV_ARGS(&dxgiFactory));
+
+	Microsoft::WRL::ComPtr<IDXGIAdapter1> adapter;
+	for (UINT i = 0; dxgiFactory->EnumAdapters1(i, &adapter) == S_OK; ++i) {
+		DXGI_ADAPTER_DESC1 desc {};
+		adapter->GetDesc1(&desc);
+		if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) { adapter.Reset(); continue; } // WARP はスキップ
+		break;  // 実 GPU を見つけた
+	}
+
+	// ── ④ デバイス生成 ───────────────────────
+	hr = D3D11CreateDevice(
+						   adapter.Get(),                       // 実 GPU を指定
+						   D3D_DRIVER_TYPE_UNKNOWN,             // ↑を使うときは UNKNOWN
+						   nullptr,                             // ソフトウェアモジュール
+						   creationFlags,
+						   levels, _countof(levels),
+						   D3D11_SDK_VERSION,
+						   &d3d11Dev,
+						   nullptr,                             // 実決定された FeatureLevel（不要なら nullptr）
+						   &d3d11Ctx
+						   );
+	if (FAILED(hr))
+		TVPThrowExceptionMessage(hr, L"D3D11CreateDevice: ");
+
+	// 1) D3D11 device と DXGI device manager を用意
+	Microsoft::WRL::ComPtr<IMFDXGIDeviceManager>   dxgiMan;
+	UINT resetToken = 0;
+	MFCreateDXGIDeviceManager(&resetToken, &dxgiMan);
+	dxgiMan->ResetDevice(d3d11Dev.Get(), resetToken);
+
+	// 2) SinkWriter 用属性ストア
+	Microsoft::WRL::ComPtr<IMFAttributes> attrs;
+	MFCreateAttributes(&attrs, 5);
+	attrs->SetUINT32(MF_READWRITE_ENABLE_HARDWARE_TRANSFORMS, TRUE);  // ★HW MFT 許可
+	attrs->SetUnknown(MF_SINK_WRITER_D3D_MANAGER, dxgiMan.Get());     // ★D3D デバイス共有
+
 	// SinkWriter 作成
-	hr = MFCreateSinkWriterFromURL(outFile.c_str(), NULL, NULL, &m_SinkWriter);
+	hr = MFCreateSinkWriterFromURL(outFile.c_str(), NULL, attrs.Get(), &m_SinkWriter);
 
 	if (FAILED(hr))
 		TVPThrowExceptionMessage(hr, L"MFCreateSinkWriterFromURL: ");
