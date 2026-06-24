@@ -2,13 +2,14 @@
 #define __MEDIA_FOUNDATION_ENCODER_H__
 
 #include <windows.h>
+
 #include <mfapi.h>
 #include <mfidl.h>
 #include <mfreadwrite.h>
 #include <mferror.h>
+
 #include <wrl/client.h>
 #include <string>
-
 
 class MediaFoundationEncoder
 {
@@ -17,12 +18,16 @@ public:
 	~MediaFoundationEncoder();
 
 	HRESULT Initial( const std::wstring &outFile );
-
 	HRESULT Start();
 	HRESULT Stop();
 
+	// sample は bottom-up ARGB32/BGRA 画像ブロックの先頭アドレス。
+	// sample_size は元画像ブロック全体のバイト数で、sample_size / video_height_ を
+	// 入力 pitch として扱う。Media Foundation へ渡す直前に width * 4 の
+	// tight packed な一時バッファへ詰め直す。
 	void WriteVideoSample(void *sample, size_t sample_size, LONGLONG time, LONGLONG duration);
-	//	void WriteAudioSample(void* sample, size_t sample_size, LONGLONG time, LONGLONG duration);
+
+	// void WriteAudioSample(void* sample, size_t sample_size, LONGLONG time, LONGLONG duration);
 
 	void SetVideoQuality( DWORD q );
 	DWORD GetVideoQuality() const;
@@ -42,15 +47,16 @@ public:
 private:
 	Microsoft::WRL::ComPtr<IMFSinkWriter> m_SinkWriter;
 	Microsoft::WRL::ComPtr<IMFMediaType> m_VideoOutType;
-    Microsoft::WRL::ComPtr<IMFMediaType> m_VideoInType;
+	Microsoft::WRL::ComPtr<IMFMediaType> m_VideoInType;
+
 	DWORD m_VideoStreamIndex;
 
 	bool encoder_running_;
 
-	DWORD video_quality_;		// クオリティ、0 - 100 ( default 75 )
-	tjs_real video_frame_rate_;           // フレームレート(default 30)
-	int video_width_;		// 画像幅 ( default 640 )
-	int video_height_;		// 画像高さ ( default 480 )
-};
+	DWORD video_quality_; // クオリティ、0 - 100 ( default 75 )
+	tjs_real video_frame_rate_; // フレームレート(default 30)
 
-#endif //  __MEDIA_FOUNDATION_ENCODER_H__
+	int video_width_; // 入力画像幅 ( default 640 )
+	int video_height_; // 入力画像高さ ( default 480 )
+};
+#endif // __MEDIA_FOUNDATION_ENCODER_H__
